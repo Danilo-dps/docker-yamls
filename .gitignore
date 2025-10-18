@@ -1,0 +1,24 @@
+# Environment variables
+.env
+*.env
+
+# Diretório específico do seu projeto
+payments-notification/.env
+
+# Arquivos sensíveis
+config/*.local.php
+config/*.local.yml
+
+# Logs
+*.log
+logs/
+
+# Dependências
+node_modules/
+vendor/
+
+# Arquivos do IDE
+.vscode/
+.idea/
+*.swp
+*.swo
