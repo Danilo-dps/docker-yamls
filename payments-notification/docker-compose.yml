@@ -1,6 +1,6 @@
 services:
 
-  kafka:
+  kafka-broker:
     image: apache/kafka:4.0.0
     container_name: kafka_broker_payments_notification
     ports:
@@ -32,7 +32,7 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-broker:29092
       KAFKA_CLUSTERS_0_KRAFT: "true"
     depends_on:
-      - kafka
+      - kafka-broker
     networks:
       - kafka-net-payments-notification
 
