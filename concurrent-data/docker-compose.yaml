@@ -1,0 +1,58 @@
+services:
+
+  kafka:
+    image: apache/kafka:3.9.1
+    container_name: kafka-concurrent
+    ports:
+      - "${KAFKA_PORT}:9094"
+      - "${KAFKA_CONTROLLER_PORT}:9095"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: "controller,broker"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:${KAFKA_CONTROLLER_PORT}"
+      KAFKA_LISTENERS: "PLAINTEXT://:9094,CONTROLLER://:${KAFKA_CONTROLLER_PORT}"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://localhost:${KAFKA_PORT}"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - app-network-concurrent
+
+  postgres:
+    image: postgres:15
+    container_name: postgres-db-concurrent
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - app-network-concurrent
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin-concurrent
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    restart: unless-stopped
+    networks:
+      - app-network-concurrent
+
+volumes:
+  postgres_data:
+  kafka_data:
+
+networks:
+  app-network-concurrent:
+    driver: bridge
