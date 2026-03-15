@@ -1,0 +1,22 @@
+services:
+
+  mysql:
+    image: mysql:9.6.0
+    container_name: mysql-db-rh
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - mysql_data_rh:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - app-network-rh
+
+volumes:
+  mysql_data_rh:
+
+networks:
+  app-network-rh:
+    driver: bridge
