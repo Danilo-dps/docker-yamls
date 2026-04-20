@@ -1,6 +1,6 @@
 services:
   kafka:
-    image: apache/kafka:3.9.1
+    image: apache/kafka:4.2.0
     container_name: kafka-payment-notification
     ports:
       - "${KAFKA_PORT}:9096"
