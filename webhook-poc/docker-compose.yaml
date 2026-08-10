@@ -1,0 +1,33 @@
+services:
+
+  coordinator-service:
+    image: coordinator-service:1.0.0
+    container_name: coordinator-service
+    ports:
+      - "${COORDINATOR_SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      SERVER_PORT: ${SERVER_PORT}
+
+  receiver-service:
+    image: receiver-service:1.0.0
+    container_name: receiver-service
+    ports:
+      - "${RECEIVER_SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      SERVER_PORT: ${SERVER_PORT}
+      COORDINATOR_URL: ${COORDINATOR_URL}
+      TIMESTAMP_TOLERANCE: ${TIMESTAMP_TOLERANCE}
+    depends_on:
+      - coordinator-service
+
+  sender-service:
+    image: sender-service:1.0.0
+    container_name: sender-service
+    ports:
+      - "${SENDER_SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      SERVER_PORT: ${SERVER_PORT}
+      COORDINATOR_URL: ${COORDINATOR_URL}
+      WEBHOOK_RECEIVER_URL: ${WEBHOOK_RECEIVER_URL}
+    depends_on:
+      - coordinator-service
