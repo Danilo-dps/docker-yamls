@@ -1,5 +1,4 @@
 services:
-
   coordinator-service:
     image: coordinator-service:1.0.0
     container_name: coordinator-service
@@ -7,6 +6,7 @@ services:
       - "${COORDINATOR_SERVER_PORT}:${SERVER_PORT}"
     environment:
       SERVER_PORT: ${SERVER_PORT}
+      FRONTEND_URL: ${FRONTEND_URL}
 
   receiver-service:
     image: receiver-service:1.0.0
@@ -31,3 +31,17 @@ services:
       WEBHOOK_RECEIVER_URL: ${WEBHOOK_RECEIVER_URL}
     depends_on:
       - coordinator-service
+
+  webhook-tester:
+    image: webhook-tester:1.0.0
+    container_name: webhook-tester
+    ports:
+      - "${WEBHOOK_TESTER_PORT}:${WEBHOOK_TESTER_INTERNAL_PORT}"
+    environment:
+      COORDINATOR_URL: ${FRONTEND_COORDINATOR_URL}
+      RECEIVER_URL: ${FRONTEND_RECEIVER_URL}
+      SENDER_URL: ${FRONTEND_SENDER_URL}
+    depends_on:
+      - coordinator-service
+      - receiver-service
+      - sender-service
