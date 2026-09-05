@@ -1,0 +1,1 @@
+ver sobre se essa configuração do json impede o uso de dead letter queue
