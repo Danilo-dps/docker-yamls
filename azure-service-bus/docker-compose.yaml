@@ -3,12 +3,12 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: servicebus-db
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "Password123!"
+      ACCEPT_EULA: ${ACCEPT_EULA}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
     ports:
       - "1433:1433"
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'Password123!' -C -Q 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '${MSSQL_SA_PASSWORD}' -C -Q 'SELECT 1' || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,9 +26,9 @@ services:
         target: /ServiceBus_Emulator/ConfigFiles/Config.json
         read_only: true
     environment:
-      SQL_SERVER: servicebus-db
-      MSSQL_SA_PASSWORD: "Password123!"
-      ACCEPT_EULA: "Y"
+      SQL_SERVER: ${SQL_SERVER}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      ACCEPT_EULA: ${ACCEPT_EULA}
     ports:
       - "5672:5672"
 
@@ -38,6 +38,6 @@ services:
     depends_on:
       - servicebus-emulator
     environment:
-      - SERVICE_BUS_CONNECTION_STRING=Endpoint=sb://servicebus-emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;
+      - SERVICE_BUS_CONNECTION_STRING=${SERVICE_BUS_CONNECTION_STRING}
     ports:
       - "8081:80"
